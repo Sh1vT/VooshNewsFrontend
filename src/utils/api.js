@@ -1,5 +1,5 @@
 // src/utils/api.js
-const API_BASE_URL = "/api";
+API_BASE_URL = import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/+$/, "") + "/api" : "/api"
 
 /**
  * Helper that performs fetch and returns parsed JSON or throws a helpful error.
