@@ -294,7 +294,19 @@ body {
 
 /* CHAT UI */
 .chat-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 22px; gap: 10px; z-index: 30; }
-.message-list { flex: 1; overflow-y: auto; padding-bottom: 140px; display: flex; flex-direction: column; gap: 16px; }
+/* keep scrolling but hide scrollbar (works across browsers) */
+.message-list {
+  overflow-y: auto;              /* keep scroll behavior */
+  -ms-overflow-style: none;      /* IE and old Edge */
+  scrollbar-width: none;         /* Firefox */
+  scrollbar-gutter: stable;      /* avoid layout shift when scrollbar hidden (if supported) */
+  padding-bottom: 140px;
+}
+.message-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 .message { display: flex; width: 100%; align-items: flex-end; }
 .message-content { padding: 14px 16px; border-radius: 12px; max-width: 78%; word-break: break-word; background: linear-gradient(180deg, var(--muted-panel), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); }
 .message.user { justify-content: flex-end; }

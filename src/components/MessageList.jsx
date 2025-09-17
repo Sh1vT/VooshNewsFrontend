@@ -35,11 +35,36 @@ const stripSourceLines = (text = "") => {
 };
 
 const MessageList = ({ messages = [], isTyping }) => {
+  const containerRef = useRef(null);
   const endRef = useRef(null);
+  const prevCountRef = useRef(0);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, isTyping]);
+    // choose auto on first render, smooth afterwards
+    const behavior = prevCountRef.current === 0 ? "auto" : "smooth";
+    prevCountRef.current = messages.length;
+
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        if (endRef.current) {
+          try {
+            endRef.current.scrollIntoView({ behavior, block: "end" });
+          } catch (e) {
+            // fallback
+            const el = containerRef.current;
+            if (el) el.scrollTop = el.scrollHeight;
+          }
+        }
+      });
+    });
+
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+    };
+  }, [messages.length, isTyping]);
 
   const formatTime = (ts) => {
     try {
@@ -50,7 +75,7 @@ const MessageList = ({ messages = [], isTyping }) => {
   };
 
   return (
-    <div className="message-list" role="log" aria-live="polite">
+    <div className="message-list" role="log" aria-live="polite" ref={containerRef}>
       {messages.length === 0 ? (
         <div style={{ padding: 8 }} />
       ) : (
@@ -102,7 +127,17 @@ const MessageList = ({ messages = [], isTyping }) => {
         </div>
       )}
 
-      <div ref={endRef} />
+      {/* sentinel: ensure last item sits above the pinned input via scrollMarginBottom */}
+      <div
+        ref={endRef}
+        aria-hidden="true"
+        style={{
+          width: 1,
+          height: 1,
+          pointerEvents: "none",
+          scrollMarginBottom: "180px",
+        }}
+      />
     </div>
   );
 };
