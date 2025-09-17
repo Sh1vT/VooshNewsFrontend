@@ -1,0 +1,433 @@
+/* src/styles.scss
+   Production-ready, full-screen dark layout for VooshNews
+   - Permanent grid background (.bg-grid)
+   - Taller top navbar with large logo block and black logo background
+   - Clean chat UI, hero, message bubbles, and input
+*/
+
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;600;700&display=swap");
+
+:root {
+  --bg: #07080a;
+  --panel: #0b0d10;
+  --muted-panel: #0a0b0d;
+  --accent-red: #d62828;
+  --white: #eeeee5;
+  --muted: #9aa1a6;
+  --glass: rgba(255,255,255,0.02);
+  --card-border: rgba(255,255,255,0.04);
+  --shadow: 0 10px 30px rgba(2,6,10,0.6);
+}
+
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; }
+body {
+  background: linear-gradient(180deg, var(--bg), #050506 120%);
+  color: var(--white);
+  font-family: "FK Grotesk", "Space Grotesk", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+/* ROOT APP */
+.chat-app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  transition: background 280ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* GRID BACKDROP */
+/* GRID BACKDROP — animated horizontally (seamless) */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* two identical repeating gradients layered to give a denser grid */
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 40px),
+    repeating-linear-gradient(90deg, rgba(255,255,255, 0.1) 0 2px, transparent 2px 40px);
+  /* keep same tile as before so the pattern matches */
+  background-size: 40px 40px, 40px 40px;
+  background-position: 0 0, 0 0; /* start positions for both layers */
+  opacity: 1;
+  filter: contrast(1.02) saturate(0.96);
+
+  /* animation control (tweak vars) */
+  --grid-speed: 15s;   /* duration for one full loop (slower -> larger) */
+  --grid-offset: 160px;/* how far horizontally to move before repeating */
+
+  animation: grid-scroll var(--grid-speed) linear infinite;
+  will-change: background-position;
+}
+
+/* animation — moves the background horizontally */
+/* note: because the gradient repeats every 40px the animation will loop seamlessly */
+@keyframes grid-scroll {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: calc(-1 * var(--grid-offset)) 0, calc(-1 * var(--grid-offset)) 0;
+  }
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid {
+    animation: none !important;
+  }
+}
+
+
+/* ========== NAVBAR (taller) ========== */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 28px;
+  min-height: 96px; /* taller navbar */
+  background: linear-gradient(180deg, rgba(11,11,11,0.72), rgba(11,11,11,0.5));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* left group: large logo + brand */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* logo block: black background with image + stacked text */
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #000; /* explicit black bg for logo */
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* logo image (square) */
+.logo-img {
+  // width: 72px;
+  height: 108px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  background: transparent;
+}
+
+/* stacked logo text to the right of image (VOOSH / NEWS) */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  color: #fff;
+  user-select: none;
+}
+.logo-main {
+  font-family: "Source Serif 4", "Merriweather", serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  color: #fff;
+}
+.logo-sub {
+  font-family: "FK Grotesk", "Space Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.85);
+  margin-top: 2px;
+}
+
+/* brand / tagline block (kept to the right) */
+.title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.title .brand {
+  font-family: "Source Serif 4", "Merriweather", serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+}
+.title .tag {
+  font-family: "FK Grotesk", "Space Grotesk", sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* center (keeps nav balanced) */
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* right group */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* connection pill */
+.connection {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+/* status dot */
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+.status-dot.online {
+  background: #10b981;
+  box-shadow: 0 8px 24px rgba(16,185,129,0.12), 0 0 0 6px rgba(16,185,129,0.06);
+  animation: pulse 1600ms infinite ease-in-out;
+}
+.status-dot.connecting {
+  background: #f59e0b;
+  animation: blink 1100ms infinite linear;
+}
+.status-dot.offline {
+  background: #ef4444;
+}
+
+/* status text */
+.status-text {
+  font-family: "FK Grotesk", "Space Grotesk", sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* icon button */
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  height: 44px;
+  min-width: 44px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.icon-button:hover { background: rgba(255,255,255,0.02); transform: translateY(-1px); }
+
+/* primary nav button */
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--accent-red), #b01b1b);
+  border: none;
+  color: #eeeee5;
+  font-weight: 800;
+  font-family: "FK Grotesk", "Space Grotesk", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(214,40,40,0.12);
+}
+.primary-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* focus accessibility */
+.icon-button:focus, .primary-button:focus {
+  outline: 2px solid rgba(214,40,40,0.14);
+  outline-offset: 2px;
+  box-shadow: 0 8px 20px rgba(214,40,40,0.08);
+}
+
+/* animations */
+@keyframes pulse { 0%{transform:scale(1);opacity:0.9}50%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:0.9} }
+@keyframes blink { 0%{opacity:0.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-1px)}100%{opacity:0.35;transform:translateY(0)} }
+
+/* ========== STAGE / HERO / CHAT (same but with adjusted z-index) ========== */
+.stage { flex: 1; position: relative; overflow: hidden; z-index: 10; }
+
+.hero { height: 100%; display: flex; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; position: relative; z-index: 20; }
+.hero-inner { max-width: 980px; width: 100%; position: relative; z-index: 30; }
+
+.hello { font-family: "Merriweather", "Source Serif 4", serif; font-size: 64px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+.welcome { font-family: "FK Grotesk", "Space Grotesk", sans-serif; font-size: 20px; color: #e6e7e9; font-weight: 700; margin-bottom: 6px; }
+.source { font-family: "Source Serif 4", "Merriweather", serif; color: #bfc7cc; font-size: 14px; opacity: 0.95; }
+
+/* hero bubble */
+.hero-bubble { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); width: min(1100px, calc(100% - 44px)); max-width: 1180px; z-index: 60; border-radius: 999px; padding: 12px 18px; display: flex; align-items: center; gap: 16px; background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 18px 40px rgba(2,6,10,0.6); }
+.bubble-text { flex: 1; font-family: "FK Grotesk", "Space Grotesk", sans-serif; font-size: 15px; color: #eaeae7; display: flex; align-items: center; gap: 12px; }
+.bubble-text .bullet { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-red); box-shadow: 0 4px 10px rgba(214,40,40,0.14); }
+.bubble-cta button { background: var(--accent-red); color: #eeeee5; border: none; padding: 10px 16px; font-weight: 800; border-radius: 999px; cursor: pointer; font-family: "FK Grotesk", "Space Grotesk", sans-serif; }
+
+/* CHAT UI */
+.chat-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 22px; gap: 10px; z-index: 30; }
+.message-list { flex: 1; overflow-y: auto; padding-bottom: 140px; display: flex; flex-direction: column; gap: 16px; }
+.message { display: flex; width: 100%; align-items: flex-end; }
+.message-content { padding: 14px 16px; border-radius: 12px; max-width: 78%; word-break: break-word; background: linear-gradient(180deg, var(--muted-panel), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.03); }
+.message.user { justify-content: flex-end; }
+.message.user .message-content { background: linear-gradient(180deg, #020202, #050505); color: #fff; max-width: 56%; box-shadow: 0 8px 24px rgba(2,6,10,0.6); }
+.message.bot { justify-content: flex-start; }
+.message.bot .message-content { background: linear-gradient(180deg, #0b0b0b, #0e0f11); color: #e6e7e9; max-width: 78%; box-shadow: 0 10px 30px rgba(2,6,10,0.45); }
+
+.message-content .md { line-height: 1.6; color: #e6e7e9; }
+.message-content .md h1,h2,h3 { font-family: "Source Serif 4", "Merriweather", serif; color: #fff; }
+
+/* Typing dots — animated, staggered, red accent */
+.typing-indicator {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 16px;
+  /* ensure baseline alignment */
+}
+
+.typing-indicator .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-red); /* app red */
+  opacity: 0.35;
+  transform: translateY(0);
+  animation: typing-dot 1.05s infinite cubic-bezier(.2,.7,.2,1);
+  /* keep will-change for smoother animation on some browsers */
+  will-change: transform, opacity;
+}
+
+/* stagger delays for three dots */
+.typing-indicator .dot:nth-child(1) { animation-delay: 0s; }
+.typing-indicator .dot:nth-child(2) { animation-delay: 0.14s; }
+.typing-indicator .dot:nth-child(3) { animation-delay: 0.28s; }
+
+/* keyframes: small translateY + opacity pulse */
+@keyframes typing-dot {
+  0%   { transform: translateY(0);   opacity: 0.35; }
+  20%  { transform: translateY(-6px); opacity: 1;    }
+  40%  { transform: translateY(0);   opacity: 0.6;  }
+  100% { transform: translateY(0);   opacity: 0.35; }
+}
+
+/* INPUT */
+.message-input-container { display: none; position: fixed; bottom: 18px; left: 0; width: 100%; padding: 0 20px; z-index: 100; pointer-events: none; }
+.chat-app.started .message-input-container { display: block; }
+.message-input-inner { margin: 0 auto; width: min(1200px, calc(100% - 40px)); background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.03); border-radius: 999px; padding: 10px; display: flex; align-items: center; gap: 12px; pointer-events: auto; }
+.input-wrapper { flex: 1; display: flex; gap: 12px; align-items: center; }
+.message-textarea { width: 100%; background: transparent; border: none; outline: none; resize: none; color: #fff; font-family: "FK Grotesk", "Space Grotesk", sans-serif; font-size: 15px; min-height: 38px; max-height: 140px; }
+.send-button { background: var(--accent-red); border: none; color: #eeeee5; padding: 10px 14px; border-radius: 999px; cursor: pointer; font-weight: 800; font-family: "FK Grotesk", "Space Grotesk", sans-serif; }
+
+/* misc */
+.grid-svg-overlay { display: none; }
+
+/* responsive */
+@media (max-width: 720px) {
+  .hello { font-size: 36px; }
+  .logo-img { width: 48px; height: 48px; }
+  .logo-block { padding: 8px 10px; }
+  .logo-main { font-size: 18px; }
+  .title .brand { font-size: 18px; }
+  .hero-bubble { left: 50%; transform: translateX(-50%); width: calc(100% - 32px); }
+  .message-content { max-width: 94%; }
+  .message.user .message-content { max-width: 84%; }
+  .message-input-inner { width: calc(100% - 26px); }
+}
+
+
+/* News column (headline uses same serif as .hello) */
+.news-column{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:260px;
+  max-width:720px;
+  padding-top:6px;
+  z-index:30;
+}
+.news-meta{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-family:"FK Grotesk","Space Grotesk",sans-serif;
+  color:var(--muted);
+  font-size:12px;
+}
+.news-dot{opacity:0.5;margin:0 4px}
+.news-headline{
+  margin:0;
+  font-family:"Merriweather","Source Serif 4",serif;
+  font-size:20px;
+  font-weight:700;
+  color:var(--white);
+  line-height:1.08;
+  letter-spacing:0.2px;
+  max-height:48px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.news-excerpt{
+  margin:0;
+  font-family:"FK Grotesk","Space Grotesk",sans-serif;
+  font-size:13px;
+  color:rgba(255,255,255,0.78);
+  max-height:40px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+
+/* small utility */
+.hidden { display: none !important; }
+
+.news-column .news-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 200ms ease, opacity 180ms ease;
+}
+.news-column .news-link:focus,
+.news-column .news-link:hover {
+  transform: translateY(-2px);
+  opacity: 0.98;
+  text-decoration: none; /* keep control in child */
+}
+.news-column .news-link:hover .news-headline,
+.news-column .news-link:focus .news-headline {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.news-column .news-link:active {
+  transform: translateY(0);
+  opacity: 0.95;
+}
+

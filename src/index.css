@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind left in place for utility usage. Core styling lives in styles.scss */
