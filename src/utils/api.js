@@ -1,6 +1,9 @@
 // src/utils/api.js
-const API_BASE_URL = import.meta.env.VITE_API_BASE ? import.meta.env.VITE_API_BASE.replace(/\/+$/, "") + "/api" : "/api"
-
+const RAW_BASE = import.meta.env.VITE_API_BASE ?? "";
+const baseClean = RAW_BASE.replace(/\/+$/, "");
+// If VITE_API_BASE is set (e.g. https://backend.onrender.com), use it as root.
+// Otherwise fallback to the dev proxy prefix '/api' (Vite dev server rewrites /api -> backend).
+const API_BASE_URL = baseClean || "/api";
 /**
  * Helper that performs fetch and returns parsed JSON or throws a helpful error.
  */
