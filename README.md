@@ -24,7 +24,7 @@ A Vite + React + SCSS frontend for a Retrieval-Augmented Generation (RAG) chatbo
 1. Frontend sends query with `sessionId` → Backend  
 2. Backend retrieves top-k passages from Qdrant  
 3. Gemini synthesizes final answer with citations  
-4. Redis stores session chat history (TTL ~24h)  
+4. Redis stores session chat history (Default-TTL: 30 days)  
 5. Answer is returned and rendered in the UI  
 
 ---
