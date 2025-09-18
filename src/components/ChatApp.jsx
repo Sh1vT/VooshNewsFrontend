@@ -113,7 +113,7 @@ export default function ChatApp() {
 
   // ---------------- featured fetching ----------------
   const fetchFeatured = useCallback(
-    async (opts = { q: "ai news", k: 3 }) => {
+    async (opts = { q: "geopolitical news", k: 3 }) => {
       try {
         const res = await api.getFeatured({ q: opts.q, k: opts.k });
         const arr = Array.isArray(res?.featured) ? res.featured : (res?.featured ? [res.featured] : []);
