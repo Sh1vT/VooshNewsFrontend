@@ -37,7 +37,7 @@ const MessageInput = ({ onSendMessage, isLoading }) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={onKeyDown}
           className="message-textarea"
-          placeholder="Type your message — press Enter to send"
+          placeholder="Sports, Tech, Health, Business..."
           disabled={isLoading}
           rows={1}
           aria-label="Message"

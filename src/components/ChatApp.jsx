@@ -364,7 +364,7 @@ export default function ChatApp() {
               <path d="M17.65 6.35A8 8 0 1 0 6.35 17.65" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M20 4v6h-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            New Session
+            Reset
           </button>
         </div>
       </header>
@@ -390,7 +390,7 @@ export default function ChatApp() {
               >
                 <div className="bubble-text">
                   <span className="bullet" />
-                  <span>Start a conversation — ask about any article or topic</span>
+                  <span>Source? Trust me Bro...</span>
                 </div>
 
                 <div className="bubble-cta">

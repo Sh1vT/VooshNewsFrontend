@@ -356,8 +356,35 @@ body {
 .chat-app.started .message-input-container { display: block; }
 .message-input-inner { margin: 0 auto; width: min(1200px, calc(100% - 40px)); background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.03); border-radius: 999px; padding: 10px; display: flex; align-items: center; gap: 12px; pointer-events: auto; }
 .input-wrapper { flex: 1; display: flex; gap: 12px; align-items: center; }
-.message-textarea { width: 100%; background: transparent; border: none; outline: none; resize: none; color: #fff; font-family: "FK Grotesk", "Space Grotesk", sans-serif; font-size: 15px; min-height: 38px; max-height: 140px; }
 .send-button { background: var(--accent-red); border: none; color: #eeeee5; padding: 10px 14px; border-radius: 999px; cursor: pointer; font-weight: 800; font-family: "FK Grotesk", "Space Grotesk", sans-serif; }
+/* Center placeholder (hint) text vertically in message input */
+.message-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #fff;
+  font-family: "FK Grotesk", "Space Grotesk", sans-serif;
+  font-size: 15px;
+
+  /* Fix vertical alignment */
+  display: flex;
+  align-items: center;
+
+  /* These ensure text starts in the middle */
+  padding-top: 0;
+  padding-left: 1.8vw;
+  padding-bottom: 0;
+  line-height: 2; /* adjust to balance vertically */
+}
+
+/* Adjust placeholder color + alignment */
+.message-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 1; /* ensure consistent look */
+}
+
 
 /* misc */
 .grid-svg-overlay { display: none; }
@@ -443,3 +470,97 @@ body {
   opacity: 0.95;
 }
 
+/* ========================= */
+/* PHONE RESPONSIVE OVERRIDES */
+/* ========================= */
+@media (max-width: 720px) {
+  /* Hide featured news */
+  .news-column {
+    display: none !important;
+  }
+
+  /* Navbar adjustments */
+  .top-nav {
+    padding: 10px 14px;
+    min-height: 72px;
+  }
+
+  /* Logo block */
+  .logo-block {
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+  .logo-img {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  .logo-main {
+    font-size: 16px;
+  }
+  .logo-sub {
+    font-size: 11px;
+  }
+
+  /* Connection pill */
+  .connection {
+    padding: 4px 8px;
+    gap: 6px;
+    border-radius: 999px;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+  }
+  .status-text {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* New Session button */
+  .primary-button {
+    padding: 6px 10px;
+    font-size: 12px;
+    gap: 6px;
+    border-radius: 8px;
+  }
+  .primary-button svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px !important;
+  }
+
+  /* Hero section tweaks */
+  .hello {
+    font-size: 32px;
+  }
+  .welcome {
+    font-size: 16px;
+  }
+  .source {
+    font-size: 12px;
+  }
+
+  /* Chat bubbles narrower */
+  .message-content {
+    font-size: 14px;
+    max-width: 90%;
+  }
+  .message.user .message-content {
+    max-width: 80%;
+  }
+
+  /* Input bar */
+  .message-input-inner {
+    width: calc(100% - 20px);
+    padding: 8px;
+    gap: 8px;
+  }
+  .message-textarea {
+    font-size: 14px;
+    min-height: 32px;
+  }
+  .send-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
