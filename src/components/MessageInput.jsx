@@ -1,3 +1,4 @@
+// src/components/MessageInput.jsx
 import React, { useState, useRef, useEffect } from "react";
 
 const MessageInput = ({ onSendMessage, isLoading }) => {
@@ -5,20 +6,32 @@ const MessageInput = ({ onSendMessage, isLoading }) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    // If the component mounts and the app already marked started, focus automatically.
-    // Focus is orchestrated from ChatApp.startAndFocus(); this is just a safety net.
-    const ta = ref.current;
-    if (ta && typeof ta.focus === "function") {
-      // no auto focus on mount by default
-    }
+    // safety autosize on mount
+    autosize();
+    // eslint-disable-next-line
   }, []);
+
+  const autosize = () => {
+    const ta = ref.current;
+    if (!ta) return;
+    // reset to auto to recalc properly
+    ta.style.height = "auto";
+    // clamp max-height if desired (optional) -> we'll allow CSS max-height to control vertical limit
+    ta.style.height = `${Math.min(ta.scrollHeight, 400)}px`; // 400px cap
+  };
 
   const submit = (e) => {
     e?.preventDefault();
     if (!message.trim() || isLoading) return;
     onSendMessage(message.trim());
     setMessage("");
-    setTimeout(() => ref.current?.focus?.(), 40);
+    // reset height after sending
+    requestAnimationFrame(() => {
+      if (ref.current) {
+        ref.current.style.height = "auto";
+        ref.current.focus();
+      }
+    });
   };
 
   const onKeyDown = (e) => {
@@ -28,14 +41,29 @@ const MessageInput = ({ onSendMessage, isLoading }) => {
     }
   };
 
+  const onChange = (e) => {
+    setMessage(e.target.value);
+    autosize();
+  };
+
+  const onPaste = (e) => {
+    // small delay so pasted content is present to measure
+    requestAnimationFrame(autosize);
+  };
+
   return (
-    <form onSubmit={submit} className="message-input-form" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12 }}>
+    <form
+      onSubmit={submit}
+      className="message-input-form"
+      style={{ width: "100%", display: "flex", alignItems: "center", gap: 12 }}
+    >
       <div className="input-wrapper" style={{ flex: 1 }}>
         <textarea
           ref={ref}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={onChange}
           onKeyDown={onKeyDown}
+          onPaste={onPaste}
           className="message-textarea"
           placeholder="Sports, Tech, Health, Business..."
           disabled={isLoading}
